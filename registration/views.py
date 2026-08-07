@@ -66,7 +66,7 @@ def list_registrations(request):
 @api_view(["GET"])
 def download_registrations(request):
     return FileResponse(
-        open(excel_utils.REGISTRATIONS_FILE, "rb"),
+        excel_utils.export_registrations_xlsx_bytes(),
         as_attachment=True,
         filename="registrations.xlsx",
     )
@@ -75,7 +75,7 @@ def download_registrations(request):
 @api_view(["GET"])
 def download_students(request):
     return FileResponse(
-        open(excel_utils.STUDENTS_FILE, "rb"),
+        excel_utils.export_students_xlsx_bytes(),
         as_attachment=True,
         filename="students.xlsx",
     )
