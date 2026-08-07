@@ -12,13 +12,13 @@ def _sheets_error_response(e):
 def lookup_student(request, roll_no):
     try:
         student = excel_utils.find_student(roll_no)
-    except RuntimeError as e:
+    except Exception as e:
         return _sheets_error_response(e)
     if not student:
         return Response({"error": "Student not found"}, status=404)
     try:
         student["already_registered"] = excel_utils.is_already_registered(roll_no)
-    except RuntimeError as e:
+    except Exception as e:
         return _sheets_error_response(e)
     return Response(student)
 
@@ -28,7 +28,7 @@ def list_students(request):
     search = request.query_params.get("search")
     try:
         students = excel_utils.get_all_students(search=search)
-    except RuntimeError as e:
+    except Exception as e:
         return _sheets_error_response(e)
     return Response({"count": len(students), "students": students})
 
@@ -60,7 +60,7 @@ def dashboard(request):
     try:
         students = excel_utils.get_all_students()
         regs = excel_utils.get_all_registrations()
-    except RuntimeError as e:
+    except Exception as e:
         return _sheets_error_response(e)
     yes = sum(1 for r in regs if r["attend"] == "Yes")
     no = sum(1 for r in regs if r["attend"] == "No")
@@ -88,7 +88,7 @@ def list_registrations(request):
 def download_registrations(request):
     try:
         data = excel_utils.export_registrations_xlsx_bytes()
-    except RuntimeError as e:
+    except Exception as e:
         return _sheets_error_response(e)
     return FileResponse(
         data,
@@ -101,7 +101,7 @@ def download_registrations(request):
 def download_students(request):
     try:
         data = excel_utils.export_students_xlsx_bytes()
-    except RuntimeError as e:
+    except Exception as e:
         return _sheets_error_response(e)
     return FileResponse(
         data,
