@@ -3,6 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from . import excel_utils
 
+def _sheets_error_response(e):
+    return Response({"error": f"Google Sheets error: {e}"}, status=500)
 
 @api_view(["GET"])
 def lookup_student(request, roll_no):
