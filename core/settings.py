@@ -133,4 +133,5 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+    "UNAUTHENTICATED_USER": None,
 }
