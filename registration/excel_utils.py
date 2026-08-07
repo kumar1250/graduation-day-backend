@@ -18,9 +18,23 @@ only needed small changes to the two "download as .xlsx" endpoints.
 import io
 import os
 import threading
-from datetime import datetime
+from datetime import date, datetime
 
 import openpyxl
+
+
+def _to_cell_value(c):
+    """Coerce a cell value read via openpyxl into something the Google
+    Sheets API (and JSON) can actually handle. openpyxl hands back
+    native Python datetime/date objects for date-formatted cells,
+    which gspread cannot JSON-serialize when appending rows."""
+    if c is None:
+        return ""
+    if isinstance(c, datetime):
+        return c.strftime("%m/%Y")
+    if isinstance(c, date):
+        return c.strftime("%m/%Y")
+    return c
 
 from . import gsheet_utils
 
@@ -70,7 +84,7 @@ def _seed_students_if_empty(ws):
             if not row or not row[1]:
                 continue
             rows.append([
-                ("" if c is None else c) for c in _pad(row, len(STUDENTS_HEADERS))
+                _to_cell_value(c) for c in _pad(row, len(STUDENTS_HEADERS))
             ])
         if rows:
             ws.append_rows(rows, value_input_option="RAW")
